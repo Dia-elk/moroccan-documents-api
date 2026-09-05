@@ -1,0 +1,319 @@
+{
+  "info": {
+    "name": "Moroccan Documents API",
+    "description": "Reference collection for the Moroccan Documents REST API — health, document listing/detail/search, categories, and the standardized DOC_0xx error responses, in both French and Arabic.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "health"]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('service is UP', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.success).to.eql(true);",
+              "  pm.expect(body.data.status).to.eql('UP');",
+              "});"
+            ]}
+          }],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "List Documents (French)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents?lang=fr",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents"],
+              "query": [{ "key": "lang", "value": "fr" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns 10 documents in French', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.language).to.eql('fr');",
+              "  pm.expect(body.data.count).to.eql(10);",
+              "  pm.expect(body.data.documents).to.have.lengthOf(10);",
+              "  pm.expect(body.data.documents[0]).to.have.property('name');",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "List Documents (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents?lang=ar",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents"],
+              "query": [{ "key": "lang", "value": "ar" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns 10 documents in Arabic', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.language).to.eql('ar');",
+              "  pm.expect(body.data.count).to.eql(10);",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Get Document by Code (French) - national-id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/national-id?lang=fr",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "national-id"],
+              "query": [{ "key": "lang", "value": "fr" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('has document, requirements, procedures, locations', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data.document.code).to.eql('national-id');",
+              "  pm.expect(body.data.requirements.length).to.be.above(0);",
+              "  pm.expect(body.data.procedures.length).to.be.above(0);",
+              "  pm.expect(body.data.locations.length).to.be.above(0);",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Get Document by Code (Arabic) - passport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/passport?lang=ar",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "passport"],
+              "query": [{ "key": "lang", "value": "ar" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('document code matches', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data.document.code).to.eql('passport');",
+              "  pm.expect(body.data.document.feeCurrency).to.eql('MAD');",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Search Documents (French) - passeport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/search?query=passeport&lang=fr",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "search"],
+              "query": [{ "key": "query", "value": "passeport" }, { "key": "lang", "value": "fr" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('finds the passport document', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data.count).to.be.above(0);",
+              "  pm.expect(body.data.documents.some(d => d.code === 'passport')).to.eql(true);",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Search Documents (Arabic) - جواز",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/search?query=جواز&lang=ar",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "search"],
+              "query": [{ "key": "query", "value": "جواز" }, { "key": "lang", "value": "ar" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('finds a result for Arabic query', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data.count).to.be.above(0);",
+              "});"
+            ]}
+          }],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories (French)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories?lang=fr",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "categories"],
+              "query": [{ "key": "lang", "value": "fr" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns 7 categories summing to 10 documents', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.data.categories).to.have.lengthOf(7);",
+              "  const total = body.data.categories.reduce((sum, c) => sum + c.documentCount, 0);",
+              "  pm.expect(total).to.eql(10);",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "List Categories (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories?lang=ar",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "categories"],
+              "query": [{ "key": "lang", "value": "ar" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "pm.test('labels are localized', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.language).to.eql('ar');",
+              "});"
+            ]}
+          }],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "Invalid Language -> 400 DOC_002",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents?lang=es",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents"],
+              "query": [{ "key": "lang", "value": "es" }]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+              "pm.test('error code is DOC_002', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.success).to.eql(false);",
+              "  pm.expect(body.code).to.eql('DOC_002');",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Unknown Document Code -> 404 DOC_001",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/does-not-exist",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "does-not-exist"]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 404', () => pm.response.to.have.status(404));",
+              "pm.test('error code is DOC_001', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.code).to.eql('DOC_001');",
+              "});"
+            ]}
+          }],
+          "response": []
+        },
+        {
+          "name": "Search Missing Query -> 400 DOC_003",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/documents/search",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "documents", "search"]
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+              "pm.test('error code is DOC_003', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.code).to.eql('DOC_003');",
+              "});"
+            ]}
+          }],
+          "response": []
+        }
+      ]
+    }
+  ]
+}
