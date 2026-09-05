@@ -3,10 +3,6 @@ package com.morocco.documentsapi.enums;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-/**
- * Categories used to group Moroccan administrative documents.
- * Stored in the database as a lowercase string via {@link DocumentCategoryEnumConverter}.
- */
 public enum DocumentCategoryEnum {
 
     IDENTITY("Identité", "الهوية"),

@@ -15,12 +15,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-/**
- * A Moroccan administrative document (e.g. national ID, passport, birth certificate).
- * Requirements, procedures and physical locations live in their own tables and are
- * looked up by {@code documentId} rather than mapped as JPA relationships, since this
- * API is read-heavy and has no need for a bidirectional object graph.
- */
 @Entity
 @Table(name = "documents", indexes = {
         @Index(name = "idx_documents_code", columnList = "code", unique = true)
@@ -51,11 +45,9 @@ public class Document extends BaseEntity {
     @Column(nullable = false, length = 30)
     private DocumentCategoryEnum category;
 
-    /** Fixed fee amount. Null when {@link #feeVariable} is true (e.g. land title fees depend on property value). */
     @Column(name = "fee_mad", precision = 12, scale = 2)
     private BigDecimal feeMad;
 
-    /** ISO currency code for {@link #feeMad}. Most documents are MAD; Schengen visas are EUR. */
     @Column(name = "fee_currency", length = 10)
     @Builder.Default
     private String feeCurrency = "MAD";

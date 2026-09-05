@@ -61,8 +61,6 @@ class DocumentServiceImplTest {
                 .locationFr("Préfecture")
                 .locationAr("العمالة")
                 .build();
-        // id is normally assigned by BaseEntity's @PrePersist on a real save();
-        // set explicitly here since these repositories are mocked, not backed by JPA.
         document.setId(UUID.randomUUID());
         return document;
     }

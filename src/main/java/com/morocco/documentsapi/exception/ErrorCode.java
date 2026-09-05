@@ -1,10 +1,5 @@
 package com.morocco.documentsapi.exception;
 
-/**
- * Every client-facing error has a stable code so the frontend can branch on
- * {@code code} instead of parsing human-readable text. Message is resolved to
- * the language requested on the failing call (falling back to French).
- */
 public enum ErrorCode {
 
     DOC_000("Erreur interne du serveur", "خطأ داخلي في الخادم"),

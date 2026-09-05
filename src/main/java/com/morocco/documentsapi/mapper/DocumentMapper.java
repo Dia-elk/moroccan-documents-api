@@ -13,11 +13,6 @@ import com.morocco.documentsapi.model.DocumentRequirement;
 
 import java.util.List;
 
-/**
- * Pure, static entity-to-DTO conversion. No Spring bean, no business logic —
- * every field that differs by language is resolved here from the requested
- * {@code lang} ("fr" or "ar", already validated upstream).
- */
 public final class DocumentMapper {
 
     private DocumentMapper() {

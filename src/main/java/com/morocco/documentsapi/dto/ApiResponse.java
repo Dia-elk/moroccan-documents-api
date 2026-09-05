@@ -8,11 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-/**
- * Generic envelope used by every endpoint in this API so that success and error
- * responses always share the same top-level shape: success flag, requested
- * language, payload, and (on errors) a client-facing error code.
- */
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,10 +19,7 @@ public class ApiResponse<T> {
     private String language;
     private T data;
 
-    /** Set only on error responses. See the error code table in README. */
     private String code;
-
-    /** Localized message. Human-readable summary on success, localized error text on failure. */
     private String message;
 
     @Builder.Default

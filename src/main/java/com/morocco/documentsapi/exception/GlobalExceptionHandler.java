@@ -13,11 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-/**
- * Every error leaving this API goes through here so the response shape is
- * always {@link ApiResponse} with a stable {@code code} — never a raw
- * exception message.
- */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -37,8 +32,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleConstraintViolation(HttpServletRequest request) {
-        // The only constrained request params in this API are `lang` (pattern fr|ar) and
-        // `query` (must not be blank) — both are query-parameter validation failures.
         return build(HttpStatus.BAD_REQUEST, ErrorCode.DOC_002, request);
     }
 
